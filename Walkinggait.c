@@ -593,7 +593,10 @@ void WalkingGaitByLIPM::process()
         parameterinfo->walking_mode = 0;
 
     }
- 
+    else if(now_step_ == STARTSTEPCOUNTER)
+    {
+        parameterinfo->complan.walking_state = FirstStep;
+    }
     else
         parameterinfo->complan.walking_state = Repeat;
     
