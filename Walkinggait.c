@@ -253,7 +253,7 @@ void Walkinggait::update_walkdata()
         parameterinfo->X = tmp_arr[arr_index++] / 1000.0;
         parameterinfo->Y = tmp_arr[arr_index++] / 1000.0;
         parameterinfo->Z = tmp_arr[arr_index++] / 1000.0;
-        parameterinfo->THTA = tmp_arr[arr_index] / 180.0 * PI;
+        parameterinfo->THTA = tmp_arr[arr_index] / 180.0 * PI;              //輸入角度，輸出弧度
         walking_cmd_ = (walkdata_[walkdata_cnt] >> 24) & 0xFF;
         sensor_mode_ = (walkdata_[walkdata_cnt] >> 16) & 0xFF;
         get_walkdata_flag_ = true;
@@ -323,7 +323,7 @@ WalkingGaitByLIPM::WalkingGaitByLIPM()
     shift_length_ = 0;//y
     last_shift_length_ = 0;
     theta_ = 0;//theta
-    width_size_ = 4.5;//6;
+    width_size_ = 5;//6;
     lift_height_ = 6;//default_Z
     left_step_ = 0;
     right_step_ = 0;
@@ -380,6 +380,8 @@ void WalkingGaitByLIPM::initialize()
         map_walk["t_"] = temp;
         map_walk["time_point_"] = temp;
         map_walk["case"] = temp;
+        // map_walk["Control_Step_length_Y_"] = temp;
+        // map_walk["Control_Step_length_Y_"] = temp;
         // map_walk["x't_"] = temp;
 	}
 }
@@ -459,7 +461,7 @@ void WalkingGaitByLIPM::readWalkData()
             }
             else
             {
-                Step_Count_ += 1;
+                Step_Count_ += 3;
                 // step_length_ -= Control_Step_length_X_;
                 // shift_length_ -= Control_Step_length_Y_;
             }
@@ -663,7 +665,7 @@ void WalkingGaitByLIPM::process()
             rpx_ = now_length_;
             lpy_ = wFootPositionRepeat(now_left_shift_, 0, t_, TT_, T_DSP_);
             rpy_ = now_right_shift_;
-            lpz_ = wFootPositionZ(/*StartHeight_*/ lift_height_ * 1/2, t_, TT_, T_DSP_);
+            lpz_ = wFootPositionZ(/*StartHeight_*/ lift_height_ * 1/3, t_, TT_, T_DSP_);
             rpz_ = 0;
             if(theta_*last_theta_ >= 0)
             {
@@ -886,6 +888,8 @@ void WalkingGaitByLIPM::process()
         map_walk.find("t_")->second.push_back(t_);
         map_walk.find("time_point_")->second.push_back(time_point_);
         map_walk.find("case")->second.push_back(Step_Count_);
+        // map_walk.find("length_Y_")->second.push_back(Control_Step_length_Y_);
+        // map_walk.find("length_X_")->second.push_back(Control_Step_length_X_);
     }
     parameterinfo->points.IK_Point_RX = step_point_rx_;
 	parameterinfo->points.IK_Point_RY = step_point_ry_;
