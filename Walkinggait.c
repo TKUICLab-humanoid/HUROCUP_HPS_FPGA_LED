@@ -253,7 +253,7 @@ void Walkinggait::update_walkdata()
         parameterinfo->X = tmp_arr[arr_index++] / 1000.0;
         parameterinfo->Y = tmp_arr[arr_index++] / 1000.0;
         parameterinfo->Z = tmp_arr[arr_index++] / 1000.0;
-        parameterinfo->THTA = tmp_arr[arr_index] / 180.0 * PI;
+        parameterinfo->THTA = tmp_arr[arr_index] / 180.0 * PI;              //輸入角度，輸出弧度
         walking_cmd_ = (walkdata_[walkdata_cnt] >> 24) & 0xFF;
         sensor_mode_ = (walkdata_[walkdata_cnt] >> 16) & 0xFF;
         get_walkdata_flag_ = true;
