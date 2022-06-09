@@ -513,7 +513,7 @@ void WalkingGaitByLIPM::process()
 {
     readWalkParameter();
 
-    // //stepping test
+    //stepping test
 
     parameterinfo->complan.sample_point_++;
     parameterinfo->complan.time_point_ = parameterinfo->complan.sample_point_*(parameterinfo->parameters.Period_T/parameterinfo->parameters.Sample_Time);
@@ -527,49 +527,52 @@ void WalkingGaitByLIPM::process()
 
     now_step_ = (sample_point_ - 1)/(int)(period_t_ / sample_time_);
 
-    if(pre_step_ != now_step_)
+    if(check_to_walk = true)
     {
-        if((now_step_ % 2) == 1 && now_step_ > 1)
+        if(pre_step_ != now_step_)
         {
-            left_step_++;
-        }
-        else if((now_step_ % 2) == 0 && now_step_ > 1)
-        {
-            right_step_++;
-        }
-
-        if((pre_step_ % 2) == 1)
-        {
-            now_right_length_ = now_right_length_ + (last_step_length_ + step_length_);
-            now_right_shift_ = now_right_shift_ + (last_shift_length_ + shift_length_);
-        }
-        else if((pre_step_ % 2) == 0)
-        {
-            if(pre_step_ == 0)
+            if((now_step_ % 2) == 1 && now_step_ > 1) 
             {
-                now_left_length_ = now_left_length_ + step_length_;
-                now_left_shift_ = now_left_shift_ + shift_length_;
+                left_step_++;
             }
-            else
+            else if((now_step_ % 2) == 0 && now_step_ > 1)
             {
-                now_left_length_ = now_left_length_ + (last_step_length_ + step_length_);
-                now_left_shift_ = now_left_shift_ + (last_shift_length_ + shift_length_);
+                right_step_++;
             }
+
+            if((pre_step_ % 2) == 1)
+            {
+                now_right_length_ = now_right_length_ + (last_step_length_ + step_length_);
+                now_right_shift_ = now_right_shift_ + (last_shift_length_ + shift_length_);
+            }
+            else if((pre_step_ % 2) == 0)
+            {
+                if(pre_step_ == 0)
+                {
+                    now_left_length_ = now_left_length_ + step_length_;
+                    now_left_shift_ = now_left_shift_ + shift_length_;
+                }
+                else
+                {
+                    now_left_length_ = now_left_length_ + (last_step_length_ + step_length_);
+                    now_left_shift_ = now_left_shift_ + (last_shift_length_ + shift_length_);
+                }
+            }
+
+            last_step_length_ = step_length_;//上次的跨幅
+            last_length_ = now_length_;//上次到達的位置
+            now_length_ += step_length_;//現在要到的位置
+            last_shift_length_ = shift_length_;//上次的Y軸位移量
+            last_shift_ = now_shift_;//上次的Y軸位移位置
+            now_shift_ += shift_length_;//現在要到的Y軸位移位置
+            last_theta_ = theta_;//前一次的Theta量
+            is_parameter_load_ = false;
+            
+            // if(( Stepout_flag_X_ || Stepout_flag_Y_ ) && Step_Count_ < 2)
+
+            readWalkData();
+            check_to_walk = false;
         }
-
-        last_step_length_ = step_length_;//上次的跨幅
-        last_length_ = now_length_;//上次到達的位置
-        now_length_ += step_length_;//現在要到的位置
-        last_shift_length_ = shift_length_;//上次的Y軸位移量
-        last_shift_ = now_shift_;//上次的Y軸位移位置
-        now_shift_ += shift_length_;//現在要到的Y軸位移位置
-        last_theta_ = theta_;//前一次的Theta量
-        is_parameter_load_ = false;
-        
-        // if(( Stepout_flag_X_ || Stepout_flag_Y_ ) && Step_Count_ < 2)
-
-        readWalkData();
-
     }
     pre_step_ = now_step_;//步數儲存
 

@@ -72,6 +72,9 @@ public:
 // private:
     bool is_parameter_load_;
     bool ready_to_stop_;
+    
+    bool check_to_walk = false;
+
     int moving_state_;
     int period_t_;
     int time_point_, sample_point_, sample_time_;
@@ -101,6 +104,7 @@ public:
     
     int name_cont_;
 	std::map<std::string, std::vector<float>> map_walk;
+    
 };
 
 class Walkinggait : public WalkingGaitByLIPM
