@@ -527,6 +527,12 @@ void WalkingGaitByLIPM::process()
 
     now_step_ = (sample_point_ - 1)/(int)(period_t_ / sample_time_);
 
+
+    if(aa == 0)
+    {
+        check_to_walk = true;
+    }
+
     if(check_to_walk = true)
     {
         if(pre_step_ != now_step_)
@@ -586,7 +592,7 @@ void WalkingGaitByLIPM::process()
 
     if(now_step_ == step_)
         parameterinfo->complan.walking_state = StopStep;
-    else if(now_step_ < STARTSTEPCOUNTER)
+    else if(now_step_ <= 1)
         parameterinfo->complan.walking_state = StartStep;
     else if(now_step_ > step_)
     {
@@ -596,10 +602,10 @@ void WalkingGaitByLIPM::process()
         parameterinfo->walking_mode = 0;
 
     }
-    else if(now_step_ == STARTSTEPCOUNTER)
-    {
-        parameterinfo->complan.walking_state = FirstStep;
-    }
+    // else if(now_step_ == STARTSTEPCOUNTER)
+    // {
+    //     parameterinfo->complan.walking_state = FirstStep;
+    // }
     else
         parameterinfo->complan.walking_state = Repeat;
     
@@ -690,31 +696,31 @@ void WalkingGaitByLIPM::process()
             }
         }
         break;
-    case FirstStep:
-        // map_walk.find("case")->second.push_back(1);
-        now_length_ = 0;
-        vx0_ = wComVelocityInit(0, step_length_/2, now_length_, TT_, Tc_);
-        px_ = wComPosition(0, vx0_, now_length_, t_, Tc_);
-        vy0_ = wComVelocityInit(0, now_shift_+shift_length_/2, now_shift_+now_width_, TT_, Tc_);
-        py_ = wComPosition(0, vy0_, now_shift_+now_width_, t_, Tc_);
+    // case FirstStep:
+    //     // map_walk.find("case")->second.push_back(1);
+    //     now_length_ = 0;
+    //     vx0_ = wComVelocityInit(0, step_length_/2, now_length_, TT_, Tc_);
+    //     px_ = wComPosition(0, vx0_, now_length_, t_, Tc_);
+    //     vy0_ = wComVelocityInit(0, now_shift_+shift_length_/2, now_shift_+now_width_, TT_, Tc_);
+    //     py_ = wComPosition(0, vy0_, now_shift_+now_width_, t_, Tc_);
 
-        lpx_ = wFootPosition(0, step_length_, t_, TT_, T_DSP_);
-        rpx_ = 0;
-        lpy_ = wFootPosition(now_left_shift_, shift_length_, t_, TT_, T_DSP_);
-        rpy_ = 0;
-        lpz_ = wFootPositionZ(lift_height_, t_, TT_, T_DSP_);
-        rpz_ = 0;
-        if(theta_<0)
-        {
-            lpt_ = 0;
-            rpt_ = 0;
-        }
-        else
-        {
-            lpt_ = wFootTheta(abs_theta_, 0, t_, TT_, T_DSP_);
-            rpt_ = wFootTheta(-abs_theta_, 0, t_, TT_, T_DSP_);
-        }
-        break;
+    //     lpx_ = wFootPosition(0, step_length_, t_, TT_, T_DSP_);
+    //     rpx_ = 0;
+    //     lpy_ = wFootPosition(now_left_shift_, shift_length_, t_, TT_, T_DSP_);
+    //     rpy_ = 0;
+    //     lpz_ = wFootPositionZ(lift_height_, t_, TT_, T_DSP_);
+    //     rpz_ = 0;
+    //     if(theta_<0)
+    //     {
+    //         lpt_ = 0;
+    //         rpt_ = 0;
+    //     }
+    //     else
+    //     {
+    //         lpt_ = wFootTheta(abs_theta_, 0, t_, TT_, T_DSP_);
+    //         rpt_ = wFootTheta(-abs_theta_, 0, t_, TT_, T_DSP_);
+    //     }
+    //     break;
     case StopStep:
         // map_walk.find("case")->second.push_back(4);
         vx0_ = wComVelocityInit(last_length_+(last_step_length_/2), now_length_, now_length_, TT_, Tc_);

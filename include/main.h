@@ -51,6 +51,5 @@ Hand_InverseKinematic HandIK;
 
 struct timeval tstart, tend;
 double timeuse;
-int aa;
 
 #endif /* MAIN_H_ */

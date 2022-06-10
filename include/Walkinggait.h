@@ -104,6 +104,9 @@ public:
     
     int name_cont_;
 	std::map<std::string, std::vector<float>> map_walk;
+
+
+    int aa;
     
 };
 
