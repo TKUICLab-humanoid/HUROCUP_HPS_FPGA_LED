@@ -528,7 +528,7 @@ void WalkingGaitByLIPM::process()
     now_step_ = (sample_point_ - 1)/(int)(period_t_ / sample_time_);
 
 
-    if(aa == 0)
+    if(parameterinfo->X == 0.5)
     {
         check_to_walk = true;
     }

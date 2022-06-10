@@ -15,7 +15,7 @@ int main()
 	sensor.fall_Down_Flag_ = false;
 	sensor.stop_Walk_Flag_ = false;
 
-	walkinggait.aa = parameterinfo->X;
+	// walkinggait.aa = parameterinfo->X;
 
 	balance.initialize(30);
 	usleep(1000 * 1000);
@@ -30,7 +30,9 @@ int main()
 	{
     	// printf(" ");
 		// printf("aa = %d", walkinggait.aa);
-		cout << "aa"  << endl; 
+
+		cout << parameterinfo->X << endl;
+
 		// printf("rpy[0]_ = %f, rpy[1]_ = %f, rpy[2]_ = %f\n", sensor.rpy_[0],sensor.rpy_[1],sensor.rpy_[2]);
 		datamodule.load_database();
 		if(datamodule.motion_execute_flag_)
