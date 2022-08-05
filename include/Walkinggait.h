@@ -74,6 +74,8 @@ public:
     bool ready_to_stop_;
     
     bool check_to_walk = false;
+    int i = 0;
+
 
     int moving_state_;
     int period_t_;
