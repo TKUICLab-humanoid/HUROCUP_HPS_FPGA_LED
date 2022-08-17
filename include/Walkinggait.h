@@ -58,12 +58,18 @@ public:
     double wComPosition(double x0, double vx0, double px, double t, double T);
     double wFootPosition(const double start, const double length, const double t, const double T, const double T_DSP);
     double wFootPositionRepeat(const double start, const double length, const double t, const double T, const double T_DSP);
-    double wFootPositionZ(const double height, const double t, const double T, const double T_DSP);
+    // double wFootPositionZ(const double height, const double t, const double T, const double T_DSP);
+    double wFootPositionZ(const double height, const double t, const double T, const double T_DSP, const double board_step__);
     double wFootTheta(const double theta, bool reverse, const double t, const double T, const double T_DSP);
+    
+
 
     double unit_step(double x);
     double sinh(double x);
     double cosh(double x);
+
+    double board_height;
+    double board_step__;
 
     //for test
     string DtoS(double value);
@@ -74,7 +80,7 @@ public:
     bool ready_to_stop_;
     
     bool check_to_walk = false;
-    int i = 0;
+    bool board_step = false;
 
 
     int moving_state_;
