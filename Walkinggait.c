@@ -35,40 +35,33 @@ void Walkinggait::walking_timer()
             if((now_step_ %2 ) == 0)
             {
                 // cout << "now_step_ = 0" << endl;
-
-                if(parameterinfo->X == 6)
+                if(parameterinfo->Y == 1)
                 {
                     // cout << "get_sign_0" << endl;
                     process();
                 }
-
                 else
                 {
                     cout << "wait_0" << endl;
-                    break;
+                    // break;
                 }
             }
             else if((now_step_ %2 ) == 1)
             {
-                // cout << "now_step_ = 1" << endl;
-
-                if(parameterinfo->X == 7)
+                if(parameterinfo->Y == 2)
                 {
-                    // cout << "get_sign_1" << endl;
                     process();
                 }
-
                 else
                 {
-                    cout << "wait_1" << endl;
-                    break;
+                    // break;
                 }
             }
-      
             else
             {
                 cout << "finish" << endl;
             }
+
  
             // process();
             locus_flag_ = true;
@@ -388,7 +381,6 @@ WalkingGaitByLIPM::WalkingGaitByLIPM()
     Control_Step_length_X_ = 0;
     Control_Step_length_Y_ = 0;
 
-    board_step__ = 0;
 }
 WalkingGaitByLIPM::~WalkingGaitByLIPM()
 {    }
@@ -485,33 +477,33 @@ void WalkingGaitByLIPM::readWalkData()
         //     Stepout_flag_Y_ = Stepout_flag_Y_;
         // }
 
-        if( ( Stepout_flag_X_ || Stepout_flag_Y_ ) && Step_Count_ >= 2)
-        {
-            Stepout_flag_X_ = false;
-            Stepout_flag_Y_ = false;
-            Control_Step_length_X_ = 0;
-            Control_Step_length_Y_ = 0;
-            Step_Count_ = 0;
-        }
-        else if( ( Stepout_flag_X_ || Stepout_flag_Y_ ) && (Step_Count_ <= 1))
-        {
-            if(((pre_step_%2 == 0) && (Control_Step_length_Y_ < 0))||((pre_step_%2 == 1) && (Control_Step_length_Y_ > 0)))
+        // if( ( Stepout_flag_X_ || Stepout_flag_Y_ ) && Step_Count_ >= 2)
+        // {
+        //     Stepout_flag_X_ = false;
+        //     Stepout_flag_Y_ = false;
+        //     Control_Step_length_X_ = 0;
+        //     Control_Step_length_Y_ = 0;
+        //     Step_Count_ = 0;
+        // }
+        // else if( ( Stepout_flag_X_ || Stepout_flag_Y_ ) && (Step_Count_ <= 1))
+        // {
+        //     if(((pre_step_%2 == 0) && (Control_Step_length_Y_ < 0))||((pre_step_%2 == 1) && (Control_Step_length_Y_ > 0)))
             
-            {
+        //     {
 
-            }
-            else
-            {
-                Step_Count_ += 3;
+        //     }
+        //     else
+        //     {
+        //         Step_Count_ += 3;
                 // step_length_ -= Control_Step_length_X_;
                 // shift_length_ -= Control_Step_length_Y_;
-            }
-        }
-        else
-        {
+        //     }
+        // }
+        // else
+        // {
 
-        }
-        is_parameter_load_ = true;
+        // }
+        // is_parameter_load_ = true;
     }
 }
 void WalkingGaitByLIPM::resetParameter()
@@ -547,12 +539,15 @@ void WalkingGaitByLIPM::resetParameter()
     Stepout_flag_Y_ = false;
     Control_Step_length_X_ = 0;
     Control_Step_length_Y_ = 0;
+
+    board_step__ = 0;
 }  
  
 void WalkingGaitByLIPM::process()
 {
     cout << "in_process" << endl;
     readWalkParameter();
+
 
     parameterinfo->complan.sample_point_++;
     parameterinfo->complan.time_point_ = parameterinfo->complan.sample_point_*(parameterinfo->parameters.Period_T/parameterinfo->parameters.Sample_Time);
@@ -566,21 +561,15 @@ void WalkingGaitByLIPM::process()
     t_ = (double)((time_point_ - (int)sample_time_) % period_t_ + sample_time_)/1000;
 
     now_step_ = (sample_point_ - 1)/(int)(period_t_ / sample_time_);
-
-    board_step = true;
+    
 
     // cout << pre_step_ << endl;
     // cout << now_step_ << endl;
 
-
-    if(!is_parameter_load_)
+    if(is_parameter_load_)
     {
-        step_length_ = parameterinfo->X;
-        shift_length_ = parameterinfo->Y;
-        // now_length_ += step_length_;
-        // now_shift_ += shift_length_;
+        is_parameter_load_ = false; 
     }
-
 
     if(pre_step_ != now_step_)
     {
@@ -612,11 +601,12 @@ void WalkingGaitByLIPM::process()
         last_shift_ = now_shift_;//上次的Y軸位移位置
         now_shift_ += shift_length_;//現在要到的Y軸位移位置
         last_theta_ = theta_;//前一次的Theta量
-        is_parameter_load_ = false;
+
         
 
 
         readWalkData();
+        is_parameter_load_ = true;
         cout << "in___pre/now" << endl;
 
     }
@@ -626,17 +616,21 @@ void WalkingGaitByLIPM::process()
     pre_step_ = now_step_;//步數儲存
     now_width_ = width_size_ * pow(-1, now_step_+1);
 
-    if((now_step_ %2) == 0)
+    if((now_step_ %2) == 0 && now_step_ > 0)
     {
-        board_step__++;
+        board_step__ = board_step__ + 1;
     }
-    else if(now_step_ > 6)
+    else if((now_step_ %2) == 1)
+    {
+        board_step__ = board_step__;
+    }
+    else if(now_step_ > 8)
     {
         board_step__ = 0;
     }
     else
     {
-
+        board_step__ = board_step__;
     }
 
     if(ready_to_stop_)
@@ -650,7 +644,7 @@ void WalkingGaitByLIPM::process()
     else if(now_step_ <= 1)
         parameterinfo->complan.walking_state = StartStep;
     else if(now_step_ > step_)
-    {
+    { 
         if_finish_ = true;
         plot_once_ = true;
         parameterinfo->complan.walking_stop = true;
@@ -1019,7 +1013,7 @@ double WalkingGaitByLIPM::wFootPositionRepeat(const double start, const double l
 //     else
 //         return 0;
 // }
-double WalkingGaitByLIPM::wFootPositionZ(const double height, const double t, const double T, const double T_DSP, const double board_step__) 
+double WalkingGaitByLIPM::wFootPositionZ(const double height, const double t, const double T, const double T_DSP, const int board_step__) 
 {
     double new_T = T*(1-T_DSP);
     double new_t = t-T*T_DSP/2;
@@ -1027,7 +1021,7 @@ double WalkingGaitByLIPM::wFootPositionZ(const double height, const double t, co
 
     board_height = 2;
 
-    if(board_step)
+    if(board_step__ == 1 || board_step__ == 3)
     {
         if(t <= T*T_DSP/2 && board_step__ == 3)
         {
@@ -1059,6 +1053,10 @@ double WalkingGaitByLIPM::wFootPositionZ(const double height, const double t, co
     else if(board_step__ == 2)
     {
         return board_height;
+    }
+    else
+    {
+        return 0;
     }
     
 }
